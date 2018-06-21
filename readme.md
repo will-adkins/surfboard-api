@@ -93,7 +93,7 @@ The requested resource could not be found. You may be trying to access a record 
 
 An unexpected error has occurred on our side. You should never receive this response, but if you do please let us know and we'll fix it.
 
-## Get a single board by id - `GET /boards/{sku}`
+## Get a single board - `GET /boards/{sku}`
 
 Retrieve a single surfboard resource from the collection of boards. Use the sku to identify a single board.
 
@@ -101,14 +101,19 @@ Retrieve a single surfboard resource from the collection of boards. Use the sku 
 
 ```
 GET /boards/12345
+```
 
+If found, the board will be returned in the response body.
+
+```
 {
-    "_id": "board_12345",
-    "name": "shred",
-    "type": "board",
-    "category": "fish",
-    "price": 399.99,
-    "sku": "12345"
+  "_id": "board_12345",
+  "_rev": "1-1f4ee97e8aec1687a16afceed4d97355",
+  "name": "shred",
+  "category": "fish",
+  "price": 399.99,
+  "sku": "12345",
+  "type": "board"
 }
 ```
 
@@ -116,57 +121,60 @@ GET /boards/12345
 
 Returned when the operation successfully retrieves the board.
 
+### Response 404 Not Found
+
+The requested resource could not be found. You may be trying to access a record that does not exist, or you may have supplied an invalid URL.
+
+### Response 500 Internal Server Error
+
+An unexpected error has occurred on our side. You should never receive this response, but if you do please let us know and we'll fix it.
+
 ## Update a board - `PUT /boards/{sku}`
 
 Edits a board. Provide the `sku` in the path to identify the board. Provide the updated board in the body of the request.
 
-### Request body
+The `_id`, `_rev`, `type`, `name`, `category`, `price`, and `sku` properties are required.
 
-An object representing the board to edit.
+---
 
 **Example**
 
-Update the price of the board to 499.99.
+Here's an example of updating the price of the brah surfboard to 599.99
 
 ```
-PUT /boards/12345
+PUT /boards/58748
 
 {
-    "_id": "board_12345",
-    "name": "shred",
-    "type": "board",
-    "category": "fish",
-    "price": 499.99,
-    "sku": "12345"
+  "_id": "board_58748",
+  "_rev": "1-10e675d267f4a1961c278014f38aec1f",
+  "name": "brah",
+  "category": "longboard",
+  "price": 599.99,
+  "sku": "58748",
+  "type": "board"
 }
 ```
 
 ### Response 200 OK
 
-Returned when the operation successfully edits the board.
-
-## Patch/Update a cat - `PATCH /cats/{id}`
-
-**Example**
-
-Let's update the entire cat resource and increase Felix's age from 10 to 11 years old.
+Returned when the operation successfully update the surfboard.
 
 ```
-PATCH /cats/felix
-
 {
-    "age": 11
+  "ok": true,
+  "id": "add",
+  "rev": "2-A6157A5EA545C99B00FF904EEF05FD9F"
 }
 ```
 
-## Delete a cat - `DELETE /cats/{id}`
+### Response 400 Bad request
 
-Delete a cat given an id.
+Returned when the supplied request body is missing or if required fields are missing.
 
-**Example**
+### Response 404 Not Found
 
-Let's update the entire cat resource and increase Felix's age from 10 to 11 years old.
+The requested resource could not be found. You may be trying to access a record that does not exist, or you may have supplied an invalid URL.
 
-```
-DELETE /cats/felix
-```
+### Response 500 Internal Server Error
+
+An unexpected error has occurred on our side. You should never receive this response, but if you do please let us know and we'll fix it.

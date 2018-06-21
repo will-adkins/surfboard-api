@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const NodeHTTPError = require('node-http-error')
 const { propOr, isEmpty, compose, not, join } = require('ramda')
 const reqFieldChecker = require('./lib/required-field-check')
+const { addBoard } = require('./dal')
+
 app.use(bodyParser.json())
 
 app.get('/', function(req, res, next) {
@@ -42,6 +44,14 @@ app.post('/boards', (req, res, next) => {
       )
     )
   }
+
+  addBoard(newBoard, function(err, result) {
+    if (err)
+      next(
+        new NodeHTTPError(err.status, err.message, { ...err, max: 'isCool' })
+      )
+    res.status(201).send(result)
+  })
 })
 
 app.use((err, req, res, next) => {
