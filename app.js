@@ -3,7 +3,7 @@ const app = require('express')()
 const port = process.env.PORT || 5001
 const bodyParser = require('body-parser')
 const NodeHTTPError = require('node-http-error')
-const { propOr, isEmpty, compose, not } = require('ramda')
+const { propOr, isEmpty, compose, not, join } = require('ramda')
 const reqFieldChecker = require('./lib/required-field-check')
 app.use(bodyParser.json())
 
@@ -23,15 +23,23 @@ app.post('/boards', (req, res, next) => {
     )
   }
 
-  const sendMissingFieldError = compose(
-    not,
-    isEmpty,
-    reqFieldChecker(['name', 'category', 'price', 'sku'])
-  )(newBoard)
+  const missingFields = reqFieldChecker(
+    ['name', 'category', 'price', 'sku'],
+    newBoard
+  )
+
+  const sendMissingFieldError = compose(not, isEmpty)(missingFields)
 
   if (sendMissingFieldError) {
     next(
-      new NodeHTTPError(400, 'Brah, you didnt pass all the required fields.')
+      new NodeHTTPError(
+        400,
+        `Brah, you didnt pass all the required fields: ${join(
+          ', ',
+          missingFields
+        )}`,
+        { josh: 'is Cool and humble', jp: 'is Cool' }
+      )
     )
   }
 })
@@ -44,7 +52,7 @@ app.use((err, req, res, next) => {
       2
     )}`
   )
-  res.status(err.status || 500).send(err.message)
+  res.status(err.status || 500).send(err)
 })
 
 app.listen(port, () => console.log('Brah!', port))
