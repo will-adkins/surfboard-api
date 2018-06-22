@@ -6,12 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-    "load": "node load-data.js"
+    "load-data": "node load-data.js",
+    "load-indexes": "node load-indexes.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^1.17.5"
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "node-http-error": "^2.0.0",
+    "nodemon": "^1.17.5",
+    "pouchdb-adapter-http": "^7.0.0",
+    "pouchdb-core": "^7.0.0",
+    "pouchdb-find": "^7.0.0",
+    "ramda": "^0.25.0"
   }
 }
