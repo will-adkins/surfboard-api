@@ -167,7 +167,7 @@ Returned when the operation successfully update the surfboard.
 
 ### Response 400 Bad request
 
-Returned when the supplied request body is missing or if required fields are missing.
+Returned when the supplied request body is missing or if any required fields are missing or if the `sku` provided in the path does not match the `sku` property value in the request body.
 
 ### Response 404 Not Found
 
