@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const NodeHTTPError = require('node-http-error')
 const { propOr, isEmpty, compose, not, join } = require('ramda')
 const reqFieldChecker = require('./lib/required-field-check')
-const { addBoard } = require('./dal')
+const { addBoard, updateBoard } = require('./dal')
 
 app.use(bodyParser.json())
 
@@ -51,6 +51,47 @@ app.post('/boards', (req, res, next) => {
         new NodeHTTPError(err.status, err.message, { ...err, max: 'isCool' })
       )
     res.status(201).send(result)
+  })
+})
+
+app.put('/boards/:sku', function(req, res, next) {
+  const updatedBoard = propOr({}, 'body', req)
+  //console.log('updatedBoard', updatedBoard)
+
+  if (isEmpty(updatedBoard)) {
+    console.log('i dont have a board.')
+    next(
+      new NodeHTTPError(
+        400,
+        'Brah, add a board to the request body.  Ensure the Content-Type is application/json. Dude!'
+      )
+    )
+  }
+
+  const missingFields = reqFieldChecker(
+    ['_id', '_rev', 'name', 'category', 'price', 'sku'],
+    updatedBoard
+  )
+
+  const sendMissingFieldError = compose(not, isEmpty)(missingFields)
+
+  if (sendMissingFieldError) {
+    console.log('I have missing required fields. ')
+    next(
+      new NodeHTTPError(
+        400,
+        `Brah, you didnt pass all the required fields: ${join(
+          ', ',
+          missingFields
+        )}`
+      )
+    )
+  }
+
+  console.log('I am about to call the dal and update the board.')
+  updateBoard(updatedBoard, function(err, result) {
+    if (err) next(new NodeHTTPError(err.status, err.message))
+    res.status(200).send(result)
   })
 })
 

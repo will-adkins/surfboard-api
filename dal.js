@@ -17,6 +17,12 @@ const addBoard = (board, cb) => {
   db.put(modifiedBoard, cb)
 }
 
-const updateBoard = (board, cb) => db.put(board, cb)
+const updateBoard = (board, cb) => {
+  console.log('i made it to updateBoard')
 
-module.exports = { addBoard }
+  db.put(board, cb)
+}
+const deleteBoard = (board, cb) => db.remove(board, cb)
+const getBoard = (id, cb) => db.get(id, cb)
+
+module.exports = { addBoard, updateBoard, deleteBoard, getBoard }
