@@ -180,3 +180,17 @@ Indicates that the request could not be processed because of conflict in the req
 ### Response 500 Internal Server Error
 
 An unexpected error has occurred on our side. You should never receive this response, but if you do please let us know and we'll fix it.
+
+## Delete a board `DELETE /boards/{sku}`
+
+Deletes a board for the given sku.
+
+```
+DELETE /boards/{sku}
+```
+
+### Response 404 Not Found
+
+### Response 500 Internal Server Error
+
+An unexpected error has occurred on our side. You should never receive this response, but if you do please let us know and we'll fix it.

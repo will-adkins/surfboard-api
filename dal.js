@@ -2,7 +2,7 @@ require('dotenv').config()
 const PouchDB = require('pouchdb-core')
 PouchDB.plugin(require('pouchdb-adapter-http'))
 
-const { merge, prop } = require('ramda')
+const { merge, prop, map } = require('ramda')
 const pkGen = require('./lib/pk-gen')
 
 const db = new PouchDB(
@@ -22,7 +22,30 @@ const updateBoard = (board, cb) => {
 
   db.put(board, cb)
 }
-const deleteBoard = (board, cb) => db.remove(board, cb)
-const getBoard = (id, cb) => db.get(id, cb)
 
-module.exports = { addBoard, updateBoard, deleteBoard, getBoard }
+const deleteBoard = (id, cb) => {
+  db.get(id, function(err, board) {
+    db.remove(board, cb)
+  })
+}
+
+const deleteBoardPromise = id =>
+  db.get(id).then(function(doc) {
+    return db.remove(doc)
+  })
+
+const getBoard = id => db.get(id)
+
+const listBoards = limit =>
+  db
+    .allDocs({ include_docs: true, limit })
+    .then(response => map(prop('doc'), response.rows))
+
+module.exports = {
+  addBoard,
+  updateBoard,
+  deleteBoard,
+  getBoard,
+  deleteBoardPromise,
+  listBoards
+}
