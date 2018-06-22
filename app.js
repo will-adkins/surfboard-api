@@ -118,7 +118,13 @@ app.delete('/boards/:sku', (req, res, next) =>
 
 app.get('/boards', (req, res, next) => {
   const limit = Number(pathOr(10, ['query', 'limit'], req)) // "10" or 10
-  listBoards(limit)
+
+  // /boards?limit=2&start_key=board_22221
+
+  // 1) do they want to paginate?
+  const paginate = pathOr(null, ['query', 'start_key'], req)
+
+  listBoards(limit, paginate)
     .then(boards => res.status(200).send(boards))
     .catch(err => next(new NodeHTTPError(err.status, err.message, err)))
 })

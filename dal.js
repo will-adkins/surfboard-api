@@ -36,9 +36,13 @@ const deleteBoardPromise = id =>
 
 const getBoard = id => db.get(id)
 
-const listBoards = limit =>
+const listBoards = (limit, paginate) =>
   db
-    .allDocs({ include_docs: true, limit })
+    .allDocs(
+      paginate
+        ? { include_docs: true, limit, start_key: `${paginate}\ufff0` }
+        : { include_docs: true, limit }
+    )
     .then(response => map(prop('doc'), response.rows))
 
 module.exports = {
