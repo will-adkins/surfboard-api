@@ -17,4 +17,6 @@ const addBoard = (board, cb) => {
   db.put(modifiedBoard, cb)
 }
 
+const updateBoard = (board, cb) => db.put(board, cb)
+
 module.exports = { addBoard }
